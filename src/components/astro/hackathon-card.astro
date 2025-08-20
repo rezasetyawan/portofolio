@@ -1,0 +1,55 @@
+---
+import { Badge } from "@/components/ui/badge";
+import AvatarFull from "../ui/avatar-full";
+
+interface Props {
+  title: string;
+  description: string;
+  dates: string;
+  location: string;
+  image: string;
+  links?: {
+    icon: any;
+    title: string;
+    href: string;
+  }[];
+}
+
+const { title, description, dates, location, image, links } = Astro.props;
+
+console.log(image)
+---
+
+<li class="relative ml-10 py-4">
+  <div
+    class="absolute -left-16 top-2 flex items-center justify-center bg-white rounded-full"
+  >
+    <AvatarFull  client:load src={image} alt={location} className="border size-12 m-auto" />
+  </div>
+  <div class="flex flex-1 flex-col justify-start gap-1">
+    {dates && <time class="text-xs text-muted-foreground">{dates}</time>}
+    <h2 class="font-semibold leading-none">{title}</h2>
+    {location && <p class="text-sm text-muted-foreground">{location}</p>}
+    {
+      description && (
+        <span class="prose dark:prose-invert text-sm text-muted-foreground">
+          {description}
+        </span>
+      )
+    }
+  </div>
+  {
+    links && links.length > 0 && (
+      <div class="mt-2 flex flex-row flex-wrap items-start gap-2">
+        {links.map((link, idx) => (
+          <a href={link.href} aria-label={link.title}>
+            <Badge title={link.title} className="flex gap-2">
+              {link.icon}
+              {link.title}
+            </Badge>
+          </a>
+        ))}
+      </div>
+    )
+  }
+</li>

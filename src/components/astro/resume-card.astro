@@ -1,0 +1,69 @@
+---
+import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader } from "@/components/ui/card";
+import { ChevronRightIcon } from "lucide-react";
+import AvatarFull from "../ui/avatar-full";
+
+interface Props {
+  logoUrl: string;
+  altText: string;
+  title: string;
+  subtitle?: string;
+  href?: string;
+  badges?: readonly string[];
+  period: string;
+  description?: string;
+}
+
+const { logoUrl, altText, title, subtitle, href, badges, period, description } =
+  Astro.props;
+---
+
+<div class="block cursor-pointer">
+  <Card className="flex">
+    <div class="flex-none">
+      <AvatarFull client:load src={logoUrl} alt={altText} className="border size-12 m-auto bg-muted-background dark:bg-foreground" />
+    </div>
+    <div class="flex-grow ml-4 items-center flex-col group">
+      <CardHeader>
+        <div class="flex items-center justify-between gap-x-2 text-base">
+          <h3
+            class="inline-flex items-center justify-center font-semibold leading-none text-xs sm:text-sm"
+          >
+            {title}
+            {
+              badges && (
+                <span class="inline-flex gap-x-1">
+                  {badges.map((badge) => (
+                    <Badge variant="secondary" className="align-middle text-xs">
+                      {badge}
+                    </Badge>
+                  ))}
+                </span>
+              )
+            }
+            <ChevronRightIcon
+              className="size-4 transition-transform duration-300 group-open:rotate-90"
+            />
+          </h3>
+          <div
+            class="text-xs sm:text-sm tabular-nums text-muted-foreground text-right"
+          >
+            {period}
+          </div>
+        </div>
+        {subtitle && <div class="font-sans text-xs">{subtitle}</div>}
+      </CardHeader>
+      {
+        description && (
+          <details class="mt-2 text-xs sm:text-sm">
+            <summary class="cursor-pointer list-none">
+              <span class="sr-only">Toggle description</span>
+            </summary>
+            <div class="pt-2">{description}</div>
+          </details>
+        )
+      }
+    </div>
+  </Card>
+</div>
