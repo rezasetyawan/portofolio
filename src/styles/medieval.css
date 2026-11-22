@@ -616,6 +616,62 @@ img {
   width: 100%;
 }
 
+/* Bottom Camp Cats Ledge */
+.cat-ledge {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cat-ledge__stage {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cat-ledge__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.cat-ledge__status {
+  font-size: 0.75rem;
+  color: var(--dim);
+}
+
+.cat-ledge__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cat-ledge__toggle {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  min-height: 44px;
+  padding: 0 0.75rem;
+}
+
+.cat-ledge__toggle--muted {
+  border-color: var(--border-subtle);
+  color: var(--dim);
+}
+
+.cat-ledge__toggle:hover {
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
 /* Footer */
 .site-footer {
   max-width: var(--max-w);

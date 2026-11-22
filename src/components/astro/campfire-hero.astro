@@ -5,23 +5,31 @@ import { frameText } from "ascii-magic-art/runtime/player.js";
 const initialFrame = frameText(createCampfire()(0));
 ---
 
-<div class="campfire-frame">
+<div
+  class="campfire-frame"
+  data-ascii-hero
+  data-ascii-speed="0.5"
+  data-pause-label="[ pause ]"
+  data-resume-label="[ ignite ]"
+>
   <div class="campfire-frame__bar">
     <span class="campfire-frame__title">+--- rest by the fire</span>
     <button
       type="button"
       class="campfire-toggle"
       id="campfire-toggle"
+      data-ascii-toggle
       aria-pressed="false"
     >
       [ pause ]
     </button>
   </div>
 
-  <div class="campfire-stage" id="campfire-stage">
+  <div class="campfire-stage" data-ascii-stage>
     <pre
       id="campfire-pre"
       class="campfire-pre"
+      data-ascii-pre
       role="img"
       aria-label={`${meta.name}: ${meta.note}`}
     >{initialFrame}</pre>
@@ -30,62 +38,9 @@ const initialFrame = frameText(createCampfire()(0));
 
 <script>
   import * as campfire from "ascii-magic-art/pieces/campfire-under-stars.js";
-  import { play } from "ascii-magic-art/runtime/player.js";
+  import { mountAsciiPiece } from "@/lib/ascii-mount";
 
-  const stage = document.getElementById("campfire-stage");
-  const pre = document.getElementById("campfire-pre");
-  const toggleBtn = document.getElementById("campfire-toggle");
-
-  if (stage && pre) {
-    const syncFontSize = () => {
-      const avail = stage.clientWidth;
-      if (avail <= 0) return;
-      pre.style.fontSize = "16px";
-      const measured = pre.scrollWidth;
-      if (measured > 0) {
-        const px = Math.floor(((avail / measured) * 16) * 2) / 2;
-        pre.style.fontSize = `${Math.max(4, px)}px`;
-      }
-    };
-
-    syncFontSize();
-
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    let paused = prefersReduced;
-    let stop: (() => void) | null = null;
-
-    const syncButton = () => {
-      if (!toggleBtn) return;
-      toggleBtn.setAttribute("aria-pressed", String(paused));
-      toggleBtn.textContent = paused ? "[ ignite ]" : "[ pause ]";
-    };
-
-    const startPlayer = () => {
-      stop?.();
-      syncFontSize();
-      stop = play(pre, campfire, { dom: true, speed: 0.5, still: paused });
-      syncButton();
-    };
-
-    startPlayer();
-
-    if (typeof ResizeObserver !== "undefined") {
-      let lastWidth = stage.clientWidth;
-      const ro = new ResizeObserver(() => {
-        const nextWidth = stage.clientWidth;
-        if (nextWidth === lastWidth) return;
-        lastWidth = nextWidth;
-        syncFontSize();
-      });
-      ro.observe(stage);
-    }
-
-    toggleBtn?.addEventListener("click", () => {
-      paused = !paused;
-      startPlayer();
-    });
-  }
+  document.querySelectorAll<HTMLElement>("[data-ascii-hero]").forEach((el) => {
+    mountAsciiPiece(el, campfire);
+  });
 </script>

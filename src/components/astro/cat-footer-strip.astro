@@ -1,0 +1,91 @@
+---
+import createCats, { meta } from "@/lib/cat-ledge";
+import { frameText } from "ascii-magic-art/runtime/player.js";
+
+const initialFrame = frameText(createCats()(0));
+---
+
+<aside
+  class="cat-ledge"
+  aria-label={meta.note}
+  data-ascii-ledge
+  data-ascii-speed="1"
+  data-pause-label="[ pause ]"
+  data-resume-label="[ wake ]"
+>
+  <div class="cat-ledge__stage" data-ascii-stage title="Click to drop a treat">
+    <pre
+      class="campfire-pre"
+      data-ascii-pre
+      role="img"
+      aria-label={`${meta.name}: ${meta.note}`}
+    >{initialFrame}</pre>
+  </div>
+  <div class="cat-ledge__bar">
+    <span class="cat-ledge__status" data-cat-status aria-live="polite">
+      +--- click ledge, feed, or toss yarn
+    </span>
+    <div class="cat-ledge__controls">
+      <button type="button" class="cat-ledge__toggle" data-cat-feed>
+        [ feed ]
+      </button>
+      <button type="button" class="cat-ledge__toggle" data-cat-play>
+        [ play ]
+      </button>
+      <button
+        type="button"
+        class="cat-ledge__toggle cat-ledge__toggle--muted"
+        data-ascii-toggle
+        aria-pressed="false"
+      >
+        [ pause ]
+      </button>
+    </div>
+  </div>
+</aside>
+
+<script>
+  import * as cats from "@/lib/cat-ledge";
+  import { dropTreat, tossYarn } from "@/lib/cat-ledge";
+  import { mountAsciiPiece } from "@/lib/ascii-mount";
+
+  document.querySelectorAll<HTMLElement>("[data-ascii-ledge]").forEach((el) => {
+    mountAsciiPiece(el, cats);
+
+    const stage = el.querySelector<HTMLElement>("[data-ascii-stage]");
+    const feedBtn = el.querySelector<HTMLButtonElement>("[data-cat-feed]");
+    const playBtn = el.querySelector<HTMLButtonElement>("[data-cat-play]");
+    const toggleBtn = el.querySelector<HTMLButtonElement>("[data-ascii-toggle]");
+    const status = el.querySelector<HTMLElement>("[data-cat-status]");
+
+    const wakeIfPaused = () => {
+      if (toggleBtn?.getAttribute("aria-pressed") === "true") {
+        toggleBtn.click();
+      }
+    };
+
+    const setStatus = (msg: string) => {
+      if (status) status.textContent = msg;
+    };
+
+    feedBtn?.addEventListener("click", () => {
+      wakeIfPaused();
+      dropTreat();
+      setStatus("+--- dropped fish ><>");
+    });
+
+    playBtn?.addEventListener("click", () => {
+      wakeIfPaused();
+      tossYarn();
+      setStatus("+--- tossed yarn ball");
+    });
+
+    stage?.addEventListener("click", (e) => {
+      const rect = stage.getBoundingClientRect();
+      const col = Math.round(((e.clientX - rect.left) / Math.max(1, rect.width)) * 100);
+      wakeIfPaused();
+      dropTreat(col);
+      setStatus("+--- dropped fish ><>");
+    });
+  });
+</script>
