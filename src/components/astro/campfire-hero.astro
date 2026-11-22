@@ -1,0 +1,89 @@
+---
+import createCampfire, { meta } from "ascii-magic-art/pieces/campfire-under-stars.js";
+import { frameText } from "ascii-magic-art/runtime/player.js";
+
+const initialFrame = frameText(createCampfire()(0));
+---
+
+<div class="campfire-frame">
+  <div class="campfire-frame__bar">
+    <span class="campfire-frame__title">+--- rest by the fire</span>
+    <button
+      type="button"
+      class="campfire-toggle"
+      id="campfire-toggle"
+      aria-pressed="false"
+    >
+      [ pause ]
+    </button>
+  </div>
+
+  <div class="campfire-stage" id="campfire-stage">
+    <pre
+      id="campfire-pre"
+      class="campfire-pre"
+      role="img"
+      aria-label={`${meta.name}: ${meta.note}`}
+    >{initialFrame}</pre>
+  </div>
+</div>
+
+<script>
+  import * as campfire from "ascii-magic-art/pieces/campfire-under-stars.js";
+  import { play } from "ascii-magic-art/runtime/player.js";
+
+  const stage = document.getElementById("campfire-stage");
+  const pre = document.getElementById("campfire-pre");
+  const toggleBtn = document.getElementById("campfire-toggle");
+
+  if (stage && pre) {
+    const CELL_W = 0.602;
+    const syncFontSize = () => {
+      const width = stage.clientWidth;
+      if (width > 0) {
+        pre.style.fontSize = `${width / (campfire.meta.cols * CELL_W)}px`;
+      }
+    };
+
+    syncFontSize();
+
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let paused = prefersReduced;
+    let stop: (() => void) | null = null;
+
+    const syncButton = () => {
+      if (!toggleBtn) return;
+      toggleBtn.setAttribute("aria-pressed", String(paused));
+      toggleBtn.textContent = paused ? "[ ignite ]" : "[ pause ]";
+    };
+
+    const startPlayer = () => {
+      stop?.();
+      syncFontSize();
+      stop = play(pre, campfire, { speed: 0.5, still: paused });
+      syncButton();
+    };
+
+    startPlayer();
+
+    if (typeof ResizeObserver !== "undefined") {
+      let lastWidth = stage.clientWidth;
+      const ro = new ResizeObserver(() => {
+        const nextWidth = stage.clientWidth;
+        if (nextWidth === lastWidth) return;
+        lastWidth = nextWidth;
+        syncFontSize();
+        if (paused) startPlayer();
+      });
+      ro.observe(stage);
+    }
+
+    toggleBtn?.addEventListener("click", () => {
+      paused = !paused;
+      startPlayer();
+    });
+  }
+</script>

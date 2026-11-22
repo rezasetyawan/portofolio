@@ -1,208 +1,158 @@
 ---
+import CampfireHero from "@/components/astro/campfire-hero.astro";
 import HackathonCard from "@/components/astro/hackathon-card.astro";
 import ProjectCard from "@/components/astro/project-card.astro";
 import ResumeCard from "@/components/astro/resume-card.astro";
-import BlurFade from "@/components/magicui/blur-fade";
-import BlurFadeText from "@/components/magicui/blur-fade-text";
-import { Badge } from "@/components/ui/badge";
 import { DATA } from "@/data/resume";
 import Layout from "@/layouts/layout.astro";
-import { marked } from "marked";
-
-const BLUR_FADE_DELAY = 0.04;
 ---
 
-<Layout title="Reza Setyawan">
-  <main class="flex flex-col min-h-[100dvh] space-y-10">
+<Layout title={DATA.name} description={`${DATA.name}, ${DATA.description}.`}>
+  <main class="ascii-main">
     <!-- Hero -->
-    <section id="hero">
-      <div class="mx-auto w-full max-w-[502rem] space-y-8">
-        <div class="gap-2 flex justify-between">
-          <div class="flex-col flex flex-1 space-y-1.5">
-            <BlurFadeText
-              client:load
-              delay={BLUR_FADE_DELAY}
-              className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none"
-              yOffset={8}
-              text={`Hi, I'm ${DATA.name} 👋`}
-              as="h1"
-            />
-            <BlurFadeText
-              client:load
-              className="max-w-[600px] md:text-xl"
-              delay={BLUR_FADE_DELAY}
-              as="h2"
-              text={DATA.description}
-            />
-          </div>
-          <!-- <BlurFade client:load delay={BLUR_FADE_DELAY}>
-          <Avatar className="size-28 border">
-            <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
-            <AvatarFallback>{DATA.initials}</AvatarFallback>
-          </Avatar>
-        </BlurFade> -->
+    <section id="hero" class="hero">
+      <CampfireHero />
+
+      <div class="hero-intro">
+        <div>
+          <h1 class="hero-title">
+            <span class="hero-prefix">&gt;</span> {DATA.name}
+          </h1>
+          <p class="hero-subtitle">
+            {DATA.description}
+          </p>
+        </div>
+        <div class="hero-actions">
+          {/* <a href="#projects" class="ascii-btn-primary">[ view works ]</a> */}
+          <a href="#contact" class="ascii-btn-primary">[ send a raven ]</a>
         </div>
       </div>
     </section>
 
     <!-- About -->
-    <section id="about">
-      <BlurFade client:load delay={BLUR_FADE_DELAY * 3}>
-        <h2 class="text-xl font-bold">About</h2>
-      </BlurFade>
-      <BlurFade client:load delay={BLUR_FADE_DELAY * 4}>
-        <div
-          class="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert"
-          set:html={marked(DATA.summary)}
-        />
-      </BlurFade>
+    <section id="about" class="section-block">
+      <h2 class="section-heading">
+        <span class="section-num">01 /</span> chronicle
+      </h2>
+      <blockquote class="chronicle-quote">
+        {DATA.summary}
+      </blockquote>
     </section>
 
-    <!-- Work -->
-    <section id="work">
-      <div class="flex min-h-0 flex-col gap-y-3">
-        <BlurFade client:load delay={BLUR_FADE_DELAY * 5}>
-          <h2 class="text-xl font-bold">Experience</h2>
-        </BlurFade>
-
-        <BlurFade client:load delay={BLUR_FADE_DELAY * 14}>
-          <ul class="mb-4 ml-4 divide-y divide-dashed border-l">
-            {
-              DATA.work.map((work, id) => (
-                <BlurFade
-                  client:load
-                  delay={BLUR_FADE_DELAY * 15 + id * 0.05}
-                  className={
-                    id !== DATA.work.length - 1 ? "border-b border-dashed" : ""
-                  }
-                >
-                  <HackathonCard
-                    title={work.title}
-                    description={work.description}
-                    location={work.company}
-                    dates={`${work.start} - ${work.end ?? "Present"}`}
-                    image={work.logoUrl}
-                  />
-                </BlurFade>
-              ))
-            }
-          </ul>
-        </BlurFade>
-      </div>
+    <!-- Experience -->
+    <section id="work" class="section-block">
+      <h2 class="section-heading">
+        <span class="section-num">02 /</span> guilds
+      </h2>
+      <ul class="guild-list">
+        {
+          DATA.work.map((work) => (
+            <HackathonCard
+              title={work.title}
+              description={work.description}
+              location={`${work.company} · ${work.location}`}
+              dates={`${work.start} - ${work.end}`}
+              image={work.logoUrl}
+              active={work.end === "Present"}
+            />
+          ))
+        }
+      </ul>
     </section>
 
     <!-- Education -->
-    <section id="education">
-      <div class="flex min-h-0 flex-col gap-y-3">
-        <BlurFade client:load delay={BLUR_FADE_DELAY * 7}>
-          <h2 class="text-xl font-bold">Education</h2>
-        </BlurFade>
+    <section id="education" class="section-block">
+      <h2 class="section-heading">
+        <span class="section-num">03 /</span> academy
+      </h2>
+      {
+        DATA.education.map((edu) => (
+          <ResumeCard
+            href={edu.href}
+            logoUrl={edu.logoUrl}
+            altText={edu.school}
+            title={edu.school}
+            subtitle={edu.degree}
+            period={`${edu.start} - ${edu.end}`}
+          />
+        ))
+      }
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="section-block">
+      <h2 class="section-heading">
+        <span class="section-num">04 /</span> arsenal
+      </h2>
+      <ul class="arsenal-grid" aria-label="Technical skills">
         {
-          DATA.education.map((education, id) => (
-            <BlurFade client:load delay={BLUR_FADE_DELAY * 8 + id * 0.05}>
-              <ResumeCard
-                href={education.href}
-                logoUrl={education.logoUrl}
-                altText={education.school}
-                title={education.school}
-                subtitle={education.degree}
-                period={`${education.start} - ${education.end}`}
-              />
-            </BlurFade>
+          DATA.skills.map((skill, idx) => (
+            <li class="arsenal-cell">
+              <span class="arsenal-cell__idx">{String(idx + 1).padStart(2, "0")}</span>
+              <span class="arsenal-cell__name">{skill}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    {/* Projects
+    <section id="projects" class="section-block">
+      <h2 class="section-heading">
+        <span class="section-num">05 /</span> works
+      </h2>
+      <div class="works-stack">
+        {
+          DATA.projects.map((project) => (
+            <ProjectCard
+              title={project.title}
+              description={project.description}
+              dates={project.dates}
+              tags={project.technologies}
+              image={project.image}
+              video={project.video}
+              links={project.links}
+            />
           ))
         }
       </div>
     </section>
-
-    <!-- Skills -->
-    <section id="skills">
-      <div class="flex min-h-0 flex-col gap-y-3">
-        <BlurFade client:load delay={BLUR_FADE_DELAY * 9}>
-          <h2 class="text-xl font-bold">Skills</h2>
-        </BlurFade>
-        <div class="flex flex-wrap gap-1">
-          {
-            DATA.skills.map((skill, id) => (
-              <BlurFade client:load delay={BLUR_FADE_DELAY * 10 + id * 0.05}>
-                <Badge>{skill}</Badge>
-              </BlurFade>
-            ))
-          }
-        </div>
-      </div>
-    </section>
-
-    <!-- Projects -->
-    <section id="projects">
-      <div class="space-y-12 w-full py-12">
-        <BlurFade client:load delay={BLUR_FADE_DELAY * 11}>
-          <div
-            class="flex flex-col items-center justify-center space-y-4 text-center"
-          >
-            <div class="space-y-2">
-              <div
-                class="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm"
-              >
-                My Projects
-              </div>
-              <h2 class="text-3xl font-bold tracking-tighter sm:text-5xl">
-                Check out my latest work
-              </h2>
-            </div>
-          </div>
-        </BlurFade>
-        <div
-          class="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[800px] mx-auto mt-10"
-        >
-          {
-            DATA.projects.map((project, id) => (
-              <BlurFade client:load delay={BLUR_FADE_DELAY * 12 + id * 0.05}>
-                <ProjectCard
-                  href={project.href}
-                  title={project.title}
-                  description={project.description}
-                  dates={project.dates}
-                  tags={project.technologies}
-                  image={project.image}
-                  video={project.video}
-                  links={project.links}
-                />
-              </BlurFade>
-            ))
-          }
-        </div>
-      </div>
-    </section>
+    */}
 
     <!-- Contact -->
-    <section id="contact">
-      <div
-        class="grid items-center justify-center gap-4 px-4 text-center md:px-6 w-full py-12"
-      >
-        <BlurFade client:load delay={BLUR_FADE_DELAY * 16}>
-          <div class="space-y-3">
-            <div
-              class="inline-block rounded-lg bg-foreground text-background px-3 py-1 text-sm"
-            >
-              Contact
-            </div>
-            <h2 class="text-3xl font-bold tracking-tighter sm:text-5xl">
-              Get in Touch
-            </h2>
-            <p
-              class="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed"
-            >
-              Want to chat? Just shoot me a dm{" "}
-              <a
-                href={DATA.contact.social.LinkedIn.url}
-                class="text-blue-500 hover:underline"
-              >
-                with a direct question on LinkedIn
-              </a>{" "}
-              and I&apos;ll respond whenever I can.
-            </p>
-          </div>
-        </BlurFade>
+    <section id="contact" class="section-block">
+      <h2 class="section-heading">
+        <span class="section-num">05 /</span> raven
+      </h2>
+      <div class="raven-band">
+        <p>
+          Want to chat? Reach out directly on LinkedIn, inspect my code on GitHub,
+          or write to me by email.
+        </p>
+        <div class="raven-actions">
+          <a
+            href={DATA.contact.social.LinkedIn.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="ascii-btn-primary"
+          >
+            [ linkedin ]
+          </a>
+          <a
+            href={DATA.contact.social.GitHub.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="ascii-btn-secondary"
+          >
+            [ github ]
+          </a>
+          <a
+            href={DATA.contact.social.Email.url}
+            class="ascii-btn-secondary"
+          >
+            [ {DATA.contact.email} ]
+          </a>
+        </div>
       </div>
     </section>
   </main>

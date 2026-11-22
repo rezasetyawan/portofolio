@@ -1,38 +1,37 @@
 ---
-const { title, description } = Astro.props;
-import Navbar from "@/components/navbar";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
-import "../styles/global.css";
 import { DATA } from "@/data/resume";
+import "@/styles/medieval.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const pageTitle = title ? `${title} | ${DATA.description}` : DATA.name;
+const pageDesc = description || `${DATA.name}, ${DATA.description}.`;
 ---
 
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>{DATA.name}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta name="theme-color" content="#040406" />
 
-    <!-- Basic meta -->
-    <meta name="description" content={description || DATA.description} />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:title" content={title || DATA.name} />
-    <meta property="og:description" content={description || DATA.description} />
+    <meta name="description" content={pageDesc} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
     <meta property="og:url" content={DATA.url} />
     <meta property="og:site_name" content={DATA.name} />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="website" />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title || DATA.name} />
-    <meta
-      name="twitter:description"
-      content={description || DATA.description}
-    />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDesc} />
 
-    <!-- Robots -->
     <meta name="robots" content="index, follow" />
     <meta
       name="googlebot"
@@ -41,28 +40,65 @@ import { DATA } from "@/data/resume";
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Umami Analytics -->
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="f2a74487-dfcc-481f-9e2d-cd8299ad4fe7"></script>
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="f2a74487-dfcc-481f-9e2d-cd8299ad4fe7"
+    ></script>
   </head>
-  <body>
-    <div
-      class={cn(
-        "min-h-screen bg-background font-sans antialiased max-w-[50rem] mx-auto py-12 sm:py-24 px-6"
-      )}
-    >
+  <body id="top">
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a href="#top" class="brand" aria-label={`${DATA.name}, return to top`}>
+          [{DATA.initials}]
+        </a>
+
+        <nav class="nav-desktop" aria-label="Primary navigation">
+          {DATA.navbar.map((item) => <a href={item.href}>[{item.label}]</a>)}
+        </nav>
+
+        <details class="mobile-nav" id="mobile-nav">
+          <summary class="mobile-nav__summary">[menu]</summary>
+          <nav class="mobile-nav__panel" aria-label="Mobile navigation">
+            {DATA.navbar.map((item) => <a href={item.href}>[{item.label}]</a>)}
+          </nav>
+        </details>
+      </div>
+    </header>
+
+    <div class="page-shell">
       <slot />
-      <TooltipProvider client:load delayDuration={0}>
-        <Navbar client:load />
-      </TooltipProvider>
     </div>
+
+    <footer class="site-footer">
+      <span>+--- {DATA.name}</span>
+      <span>
+        art:{" "}
+        <a
+          href="https://www.ascii-magic.com/ascii/campfire-under-stars"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ascii-magic-art (MIT)
+        </a>
+      </span>
+    </footer>
+
+    <script>
+      const mobileNav = document.getElementById("mobile-nav") as HTMLDetailsElement | null;
+      if (mobileNav) {
+        mobileNav.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            mobileNav.open = false;
+          });
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && mobileNav.open) {
+            mobileNav.open = false;
+            mobileNav.querySelector("summary")?.focus();
+          }
+        });
+      }
+    </script>
   </body>
 </html>
