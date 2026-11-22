@@ -273,26 +273,20 @@ img {
 .campfire-stage {
   width: 100%;
   overflow: hidden;
-  display: block;
+  display: flex;
+  justify-content: center;
   background: #02030a;
 }
 
 .campfire-pre {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: clamp(5.4px, 1.5vw, 16.6px);
+  margin: 0 auto;
+  font-family: "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", ui-monospace, monospace;
+  font-size: clamp(5.4px, 1.5vw, 16.5px);
   line-height: 1;
   letter-spacing: 0;
   white-space: pre;
   color: var(--ink-muted);
-  width: 100%;
-  overflow: hidden;
-}
-
-.campfire-stage canvas {
-  display: block;
-  width: 100% !important;
-  height: auto !important;
+  width: fit-content;
 }
 
 /* Hero Identity */

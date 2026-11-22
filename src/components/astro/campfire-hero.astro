@@ -37,11 +37,14 @@ const initialFrame = frameText(createCampfire()(0));
   const toggleBtn = document.getElementById("campfire-toggle");
 
   if (stage && pre) {
-    const CELL_W = 0.602;
     const syncFontSize = () => {
-      const width = stage.clientWidth;
-      if (width > 0) {
-        pre.style.fontSize = `${width / (campfire.meta.cols * CELL_W)}px`;
+      const avail = stage.clientWidth;
+      if (avail <= 0) return;
+      pre.style.fontSize = "16px";
+      const measured = pre.scrollWidth;
+      if (measured > 0) {
+        const px = Math.floor(((avail / measured) * 16) * 2) / 2;
+        pre.style.fontSize = `${Math.max(4, px)}px`;
       }
     };
 
@@ -63,7 +66,7 @@ const initialFrame = frameText(createCampfire()(0));
     const startPlayer = () => {
       stop?.();
       syncFontSize();
-      stop = play(pre, campfire, { speed: 0.5, still: paused });
+      stop = play(pre, campfire, { dom: true, speed: 0.5, still: paused });
       syncButton();
     };
 
@@ -76,7 +79,6 @@ const initialFrame = frameText(createCampfire()(0));
         if (nextWidth === lastWidth) return;
         lastWidth = nextWidth;
         syncFontSize();
-        if (paused) startPlayer();
       });
       ro.observe(stage);
     }
