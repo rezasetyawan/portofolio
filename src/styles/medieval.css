@@ -7,7 +7,7 @@
   --border: #60606b;
   --border-subtle: #25252d;
   --ember: #ff9a2a;
-  --font-mono: "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", ui-monospace, monospace;
+  --font-mono: "DejaVu Sans Mono", "Liberation Mono", Consolas, Menlo, Monaco, monospace;
   --max-w: 64rem;
 }
 
@@ -220,25 +220,40 @@ img {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  padding-bottom: 2rem;
+  margin-bottom: -2rem;
+  background: radial-gradient(
+    ellipse 62% 45% at 58% 54%,
+    rgba(236, 90, 16, 0.075),
+    rgba(255, 154, 42, 0.025) 45%,
+    transparent 72%
+  );
 }
 
 .campfire-frame {
   width: 100%;
+  min-width: 0;
   max-width: 1000px;
   margin: 0 auto;
-  border: 1px solid var(--border-subtle);
-  background: #02030a;
+  background: transparent;
 }
 
 .campfire-frame__bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.25rem 0.75rem;
+  gap: 0.5rem 0.75rem;
+  padding: 0.25rem 0;
   border-bottom: 1px solid var(--border-subtle);
-  background: var(--bg);
+  background: transparent;
   font-size: 0.78rem;
+}
+
+.campfire-frame__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
 }
 
 .campfire-frame__title {
@@ -261,7 +276,8 @@ img {
   white-space: nowrap;
 }
 
-.campfire-toggle:hover {
+.campfire-toggle:hover,
+.campfire-toggle[aria-pressed="true"] {
   border-color: var(--ember);
   color: var(--ember);
 }
@@ -271,16 +287,25 @@ img {
 }
 
 .campfire-stage {
+  position: relative;
   width: 100%;
   overflow: hidden;
   display: flex;
   justify-content: center;
-  background: #02030a;
+  background: transparent;
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0%, #000 10%, #000 78%, transparent 100%),
+    linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, transparent 0%, #000 10%, #000 78%, transparent 100%),
+    linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  mask-composite: intersect;
 }
 
 .campfire-pre {
   margin: 0 auto;
-  font-family: "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: clamp(5.4px, 1.5vw, 16.5px);
   line-height: 1;
   letter-spacing: 0;
