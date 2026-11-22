@@ -1,46 +1,50 @@
 ---
-import createCampfire, { meta } from "ascii-magic-art/pieces/campfire-under-stars.js";
+import createCampfire, {
+    meta,
+} from "ascii-magic-art/pieces/campfire-under-stars.js";
 import { frameText } from "ascii-magic-art/runtime/player.js";
 
 const initialFrame = frameText(createCampfire()(0));
 ---
 
 <div
-  class="campfire-frame"
-  data-ascii-hero
-  data-ascii-speed="0.5"
-  data-pause-label="[ pause ]"
-  data-resume-label="[ ignite ]"
+    class="campfire-frame"
+    data-ascii-hero
+    data-ascii-speed="0.1"
+    data-pause-label="[ pause ]"
+    data-resume-label="[ ignite ]"
 >
-  <div class="campfire-frame__bar">
-    <span class="campfire-frame__title">+--- rest by the fire</span>
-    <button
-      type="button"
-      class="campfire-toggle"
-      id="campfire-toggle"
-      data-ascii-toggle
-      aria-pressed="false"
-    >
-      [ pause ]
-    </button>
-  </div>
+    <div class="campfire-frame__bar">
+        <span class="campfire-frame__title">+--- rest by the fire</span>
+        <button
+            type="button"
+            class="campfire-toggle"
+            id="campfire-toggle"
+            data-ascii-toggle
+            aria-pressed="false"
+        >
+            [ pause ]
+        </button>
+    </div>
 
-  <div class="campfire-stage" data-ascii-stage>
-    <pre
-      id="campfire-pre"
-      class="campfire-pre"
-      data-ascii-pre
-      role="img"
-      aria-label={`${meta.name}: ${meta.note}`}
-    >{initialFrame}</pre>
-  </div>
+    <div class="campfire-stage" data-ascii-stage>
+        <pre
+            id="campfire-pre"
+            class="campfire-pre"
+            data-ascii-pre
+            role="img"
+            aria-label={`${meta.name}: ${meta.note}`}
+        >{initialFrame}</pre>
+    </div>
 </div>
 
 <script>
-  import * as campfire from "ascii-magic-art/pieces/campfire-under-stars.js";
-  import { mountAsciiPiece } from "@/lib/ascii-mount";
+    import * as campfire from "ascii-magic-art/pieces/campfire-under-stars.js";
+    import { mountAsciiPiece } from "@/lib/ascii-mount";
 
-  document.querySelectorAll<HTMLElement>("[data-ascii-hero]").forEach((el) => {
-    mountAsciiPiece(el, campfire);
-  });
+    document
+        .querySelectorAll<HTMLElement>("[data-ascii-hero]")
+        .forEach((el) => {
+            mountAsciiPiece(el, campfire);
+        });
 </script>
